@@ -1219,8 +1219,8 @@ function wireForms() {
 /* ---------- Âm thanh khi bấm ---------- */
 // Chỉ 2 nút có tiếng (data-sfx): "Mở thiệp" và "Hộp quà mừng" — các nút khác im lặng để nghe rõ nhạc nền
 const Sfx = (() => {
-  const FILES = { click: "am-thanh/click.m4a", open: "am-thanh/open.m4a", swipe: "am-thanh/swipe.m4a", chime: "am-thanh/chime.m4a" };
-  const VOLUME = { click: 0.35, open: 0.75, swipe: 0.4, chime: 0.5 };
+  const FILES = { click: "am-thanh/click.m4a", open: "am-thanh/soft-touch.wav", swipe: "am-thanh/swipe.m4a", chime: "am-thanh/chime.m4a" };
+  const VOLUME = { click: 0.35, open: 0.28, swipe: 0.4, chime: 0.5 };
   const cache = {};
   let enabled = true;
   function play(name) {
