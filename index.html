@@ -389,6 +389,7 @@ body.page-hidden *, body.page-hidden *::before, body.page-hidden *::after { anim
 .bank .qr { width: 100%; aspect-ratio: 1; border-radius: 6px; background: #fff; display: grid; place-items: center; overflow: hidden; color: var(--ink-soft); font-size: 14.5px; }
 .bank .qr img { width: 100%; height: 100%; object-fit: contain; }
 .bank .num { font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; user-select: all; }
+.gift-note { margin: 18px 0 0; font-size: 14px; line-height: 1.6; color: var(--ink-soft); text-wrap: balance; }
 .bank .holder { font-size: 14.5px; text-transform: uppercase; overflow-wrap: anywhere; }
 .mini { min-height: 34px; padding: 6px 14px; font-size: 13.5px; }
 .lightbox { position: fixed; inset: 0; z-index: 70; background: rgba(20, 2, 6, .92); display: grid; place-items: center; padding: 20px; }
@@ -582,7 +583,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
     <img class="bloom bloom-r" src="hoa/corner-a.webp" alt="" width="480" height="480">
     <!-- Chính: tên đôi + ngày. Phụ: thẻ tên khách mời -->
     <div class="cover-kicker">Thiệp mời cưới</div>
-    <h1 class="cover-names"><span data-bind="bride.short"></span><span class="amp">&amp;</span><span data-bind="groom.short"></span></h1>
+    <h1 class="cover-names"><span data-bind="groom.short"></span><span class="amp">&amp;</span><span data-bind="bride.short"></span></h1>
     <div class="flourish" style="margin:12px auto 0" aria-hidden="true"><svg viewBox="0 0 240 30"><use href="#flourish"/></svg></div>
     <div class="cover-date"><span class="cd-date" id="coverDate"></span><span class="cd-weekday" id="coverWeekday"></span></div>
     <div class="invite-tag">
@@ -607,7 +608,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
       <div class="env-seal"><svg><use href="#heart"/></svg></div>
       <img class="bloom bloom-side" src="hoa/spray.webp" alt="" width="380" height="570" decoding="async" fetchpriority="low">
     </div>
-    <h2 class="names-big"><span data-bind="bride.short"></span><span class="amp">&amp;</span><span data-bind="groom.short"></span></h2>
+    <h2 class="names-big"><span data-bind="groom.short"></span><span class="amp">&amp;</span><span data-bind="bride.short"></span></h2>
     <div class="flourish" aria-hidden="true"><svg viewBox="0 0 240 30"><use href="#flourish"/></svg></div>
   </section>
 
@@ -803,6 +804,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
     <button class="round close" type="button" data-close aria-label="Đóng"><svg viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8"/></svg></button>
     <h2 class="sec-title" id="giftTitle">Hộp quà mừng cưới</h2>
     <div class="banks" id="banks"></div>
+    <p class="gift-note" data-bind="gift.note"></p>
   </div>
 </div>
 
@@ -868,8 +870,9 @@ const CONFIG = {
     { src: "am-thanh/beautiful-in-white.mp3", title: "Beautiful In White" }
   ],
   sfx: true,                          // âm thanh khi bấm nút; false để tắt
+  gift: { downloadLabel: "Tải QR về", note: "Vui lòng kiểm tra kỹ tên người nhận, số tài khoản và số tiền trong ứng dụng ngân hàng trước khi chuyển khoản." },
   banks: [                            // chưa có số tài khoản thì hiện "Đang cập nhật"
-    { who: "Nhà gái", bank: "", number: "", holder: "NGUYEN THUY HUONG", qr: "anh/qr-nha-gai.png" },
+    { who: "Cô dâu", bank: "", number: "", holder: "NGUYEN THUY HUONG", qr: "anh/qr-nha-gai.png" },
     { who: "Chú rể", bank: "", number: "", holder: "PHAM SY MANH", qr: "" }
   ],
   sheetUrl: "https://script.google.com/macros/s/AKfycbxKM0PCOqe5nLo8KvJsZMvCL5onHHGXuZiz3rXq06dS5yKuM_UMtKMTz0idB6BjNMVXVA/exec",                       // link Web App của Google Apps Script (xem HUONG-DAN.md)
@@ -1192,6 +1195,12 @@ function buildBanks() {
     });
     copy.hidden = !b.number;
     card.append(who, qr, bank, num, holder, copy);
+    if (b.qr) {
+      const download = document.createElement("a"); download.className = "btn mini";
+      download.href = b.qr; download.download = b.qr.split("/").pop();
+      download.textContent = CONFIG.gift.downloadLabel;
+      card.append(download);
+    }
     wrap.append(card);
   });
   const modal = $("giftModal");
