@@ -20,6 +20,7 @@
 <body>
 <script>window.GUEST = {"slug":"khach-thu-nghiem","name":"Khách Thử Nghiệm","greeting":"Thân mời","note":""};</script>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&display=swap">
@@ -92,6 +93,11 @@ a { color: inherit; }
   transition: opacity .9s ease, visibility .9s;
 }
 .cover.gone { opacity: 0; visibility: hidden; }
+.cover.gone *, .cover.gone *::after,
+body.locked .letter *, body.locked .letter *::before, body.locked .letter *::after,
+body.locked .petal,
+.motion-paused *, .motion-paused *::before, .motion-paused *::after,
+body.page-hidden *, body.page-hidden *::before, body.page-hidden *::after { animation-play-state: paused !important; }
 .cover-card {
   position: relative; width: min(420px, 100%);
   background: var(--cream);
@@ -393,7 +399,6 @@ a { color: inherit; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 footer.sec { padding-bottom: 72px; }
-.letter > section:not(.hero), .letter > footer { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 .credit { margin: 28px 0 0; font-size: 12.5px; color: var(--ink-soft); opacity: .75; }
 .thanks { font-family: var(--font-script); font-size: clamp(32px, 9vw, 42px); color: var(--wine); line-height: 1.2; margin: 0; }
 
@@ -559,8 +564,8 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
 <section class="cover" id="cover" aria-label="Thiệp mời">
   <div class="cover-card">
     <div class="seal"><svg><use href="#heart"/></svg></div>
-    <img class="bloom bloom-l" src="hoa/corner-b.png" alt="" width="480" height="480">
-    <img class="bloom bloom-r" src="hoa/corner-a.png" alt="" width="480" height="480">
+    <img class="bloom bloom-l" src="hoa/corner-b.webp" alt="" width="480" height="480" fetchpriority="high">
+    <img class="bloom bloom-r" src="hoa/corner-a.webp" alt="" width="480" height="480">
     <!-- Chính: tên đôi + ngày. Phụ: thẻ tên khách mời -->
     <div class="cover-kicker">Thiệp mời cưới</div>
     <h1 class="cover-names"><span data-bind="bride.short"></span><span class="amp">&amp;</span><span data-bind="groom.short"></span></h1>
@@ -578,7 +583,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
 <main class="letter" id="letter">
   <!-- 1. Save the date -->
   <section class="sec hero">
-    <img class="sketch" src="hoa/arch-cathedral.png" decoding="async" alt="" width="720" height="960">
+    <img class="sketch" src="hoa/arch-cathedral.webp" decoding="async" alt="" width="720" height="960" fetchpriority="low">
     <div class="eyebrow">Save the date</div>
     <div class="envelope">
       <div class="env-back"></div>
@@ -586,7 +591,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
       <div class="env-mouth"><div class="env-photo" id="coverPhoto"></div></div>
       <div class="env-front"></div>
       <div class="env-seal"><svg><use href="#heart"/></svg></div>
-      <img class="bloom bloom-side" src="hoa/spray.png" alt="" width="380" height="570">
+      <img class="bloom bloom-side" src="hoa/spray.webp" alt="" width="380" height="570" decoding="async" fetchpriority="low">
     </div>
     <h2 class="names-big"><span data-bind="bride.short"></span><span class="amp">&amp;</span><span data-bind="groom.short"></span></h2>
     <div class="flourish" aria-hidden="true"><svg viewBox="0 0 240 30"><use href="#flourish"/></svg></div>
@@ -595,7 +600,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <!-- 2. Thông tin lễ cưới -->
   <section class="sec" style="padding-top:8px">
     <div class="red-card has-garland">
-      <img class="bloom bloom-garland" src="hoa/garland.png" alt="" width="760" height="326">
+      <img class="bloom bloom-garland" src="hoa/garland.webp" alt="" width="760" height="326" loading="lazy" decoding="async">
       <h2 class="sec-title">Thông tin lễ cưới</h2>
       <div class="flourish" style="margin:-10px auto 18px" aria-hidden="true"><svg viewBox="0 0 240 30"><use href="#flourish"/></svg></div>
       <!-- Hai nhà song song, ngăn bởi đường chỉ vàng -->
@@ -662,7 +667,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <!-- 4. Thông tin tiệc -->
   <section class="sec" style="padding-top:8px">
     <div class="red-card">
-      <img class="bloom bloom-corner" src="hoa/corner-a.png" alt="" width="480" height="480">
+      <img class="bloom bloom-corner" src="hoa/corner-a.webp" alt="" width="480" height="480" loading="lazy" decoding="async">
       <h2 class="sec-title">Thông tin tiệc cưới</h2>
       <div class="flourish" style="margin:-10px auto 18px" aria-hidden="true"><svg viewBox="0 0 240 30"><use href="#flourish"/></svg></div>
       <p class="time-line" id="partyLine">Tiệc cưới sẽ diễn ra vào lúc</p>
@@ -695,7 +700,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
 
   <!-- 5. Địa điểm -->
   <section class="sec venue">
-    <img class="sketch" src="hoa/arch-pavilion.png" decoding="async" alt="" width="900" height="675" loading="lazy">
+    <img class="sketch" src="hoa/arch-pavilion.webp" decoding="async" alt="" width="900" height="675" loading="lazy">
     <h2 class="sec-title" id="venueHeading">Tiệc cưới sẽ tổ chức tại</h2>
     <p class="venue-name" data-bind="venue.name"></p>
     <p class="venue-addr" data-bind="venue.address"></p>
@@ -734,7 +739,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <!-- 7. Sổ lưu bút -->
   <section class="sec" style="padding-top:12px">
     <form class="panel" id="wishForm" novalidate>
-      <img class="bloom bloom-panel" src="hoa/corner-b.png" alt="" width="480" height="480">
+      <img class="bloom bloom-panel" src="hoa/corner-b.webp" alt="" width="480" height="480" loading="lazy" decoding="async">
       <h2 class="sec-title">Sổ lưu bút</h2>
       <div class="field">
         <label for="wishName">Tên của bạn</label>
@@ -755,7 +760,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
     <h2 class="sec-title">Hộp quà mừng cưới</h2>
     <button class="gift-btn" id="giftBtn" type="button" data-sfx="open" aria-haspopup="dialog" aria-label="Mở hộp quà mừng cưới">
       <span class="gift" aria-hidden="true">
-        <img class="gift-img" src="hoa/phong-bi-mung.png" alt="" width="540" height="447" loading="lazy">
+        <img class="gift-img" src="hoa/phong-bi-mung.webp" alt="" width="540" height="447" loading="lazy">
         <span class="sparkle" style="left:6%;top:18%">✦</span>
         <span class="sparkle" style="right:8%;top:8%;animation-delay:.6s">✦</span>
         <span class="sparkle" style="left:16%;bottom:12%;animation-delay:1.2s">✦</span>
@@ -765,7 +770,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   </section>
 
   <footer class="sec">
-    <img class="bloom footer-garland" src="hoa/garland.png" alt="" width="760" height="326" loading="lazy">
+    <img class="bloom footer-garland" src="hoa/garland.webp" alt="" width="760" height="326" loading="lazy">
     <p class="thanks">Sự hiện diện của quý khách là niềm vinh hạnh của gia đình chúng tôi</p>
     <p class="credit">Nhạc nền: “Canon in D Major” – Kevin MacLeod (incompetech.com), giấy phép CC BY 3.0</p>
   </footer>
@@ -1284,6 +1289,20 @@ function addCorners() {
   });
 }
 
+// Chỉ chạy chuyển động khi phần thiệp đang nằm trong màn hình.
+function wireMotionVisibility() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(({ target, isIntersecting }) => target.classList.toggle("motion-paused", !isIntersecting));
+  });
+  document.querySelectorAll(".letter > section, .letter > footer").forEach((section) => {
+    section.classList.add("motion-paused");
+    observer.observe(section);
+  });
+  document.addEventListener("visibilitychange", () => {
+    document.body.classList.toggle("page-hidden", document.hidden);
+  });
+}
+
 function init() {
   addCorners();
   bindText();
@@ -1295,6 +1314,7 @@ function init() {
   wireForms();
   loadWishes();
   makePetals();
+  wireMotionVisibility();
   wireSfx();
   const audio = wireMusic();
   const envelope = document.querySelector(".envelope");
