@@ -868,7 +868,7 @@ const CONFIG = {
   ],
   sfx: true,                          // âm thanh khi bấm nút; false để tắt
   banks: [                            // chưa có số tài khoản thì hiện "Đang cập nhật"
-    { who: "Cô dâu", bank: "", number: "", holder: "NGUYEN THUY HUONG", qr: "" },
+    { who: "Nhà gái", bank: "", number: "", holder: "NGUYEN THUY HUONG", qr: "anh/qr-nha-gai.png" },
     { who: "Chú rể", bank: "", number: "", holder: "PHAM SY MANH", qr: "" }
   ],
   sheetUrl: "https://script.google.com/macros/s/AKfycbxKM0PCOqe5nLo8KvJsZMvCL5onHHGXuZiz3rXq06dS5yKuM_UMtKMTz0idB6BjNMVXVA/exec",                       // link Web App của Google Apps Script (xem HUONG-DAN.md)
@@ -1181,6 +1181,7 @@ function buildBanks() {
     else qr.textContent = "Mã QR";
     const bank = document.createElement("div"); bank.textContent = b.bank;
     const num = document.createElement("div"); num.className = "num"; num.textContent = b.number || "Đang cập nhật";
+    num.hidden = !b.number && !!b.qr;
     const holder = document.createElement("div"); holder.className = "holder"; holder.textContent = b.holder;
     const copy = document.createElement("button"); copy.type = "button"; copy.className = "btn mini"; copy.textContent = "Sao chép STK";
     copy.addEventListener("click", async () => {
