@@ -771,7 +771,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <footer class="sec">
     <img class="bloom footer-garland" src="hoa/garland.webp" alt="" width="760" height="326" loading="lazy">
     <p class="thanks">Sự hiện diện của quý khách là niềm vinh hạnh của gia đình chúng tôi</p>
-    <p class="credit">Nhạc nền: “Canon in D Major” – Kevin MacLeod (incompetech.com), giấy phép CC BY 3.0</p>
+    <p class="credit" data-bind="musicCredit"></p>
   </footer>
 </main>
 
@@ -829,7 +829,8 @@ const CONFIG = {
     cover: "",                        // vd "anh/bia.jpg"
     album: []                         // vd ["anh/01.jpg", "anh/02.jpg", ...]
   },
-  music: "am-thanh/nhac-cuoi.m4a",   // Canon in D – Kevin MacLeod (CC BY 3.0), giữ dòng ghi nguồn ở cuối thiệp
+  music: "am-thanh/beautiful-in-white.mp3",
+  musicCredit: "Nhạc nền: “Beautiful In White”",
   sfx: true,                          // âm thanh khi bấm nút; false để tắt
   banks: [                            // chưa có số tài khoản thì hiện "Đang cập nhật"
     { who: "Cô dâu", bank: "", number: "", holder: "NGUYEN THUY HUONG", qr: "" },
