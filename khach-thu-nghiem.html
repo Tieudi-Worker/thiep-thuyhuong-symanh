@@ -173,7 +173,8 @@ body.page-hidden *, body.page-hidden *::before, body.page-hidden *::after { anim
 .hero .sketch { bottom: 40px; width: min(600px, 125%); opacity: .42; }
 .venue .sketch { top: 0; width: min(520px, 112%); opacity: .4; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 95%); mask-image: linear-gradient(180deg, #000 55%, transparent 95%); }
 .hero > :not(.sketch), .venue > :not(.sketch) { position: relative; z-index: 1; }
-.venue { padding-top: clamp(250px, 72vw, 340px); }
+.venue { padding-top: 24px; }
+.venue-map { display: block; width: 100%; height: clamp(240px, 65vw, 340px); margin: 0 auto 28px; border: 1px solid rgba(185, 146, 90, .55); border-radius: 10px; background: var(--cream); }
 /* Phong bì: mặc định ở trạng thái đã mở; JS thêm .sealed lúc tải, rồi mở theo kịch bản khi bấm "Mở thiệp" */
 .envelope { position: relative; width: min(320px, 82%); aspect-ratio: 4 / 3.3; margin: 120px auto 0; perspective: 900px; }
 .env-back { position: absolute; inset: 22% 0 0; background: var(--wine-deep); border-radius: 4px; }
@@ -707,6 +708,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <!-- 5. Địa điểm -->
   <section class="sec venue">
     <img class="sketch" src="hoa/arch-pavilion.webp" decoding="async" alt="" width="900" height="675" loading="lazy">
+    <iframe class="venue-map" id="mapPreview" title="Bản đồ địa điểm tổ chức" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
     <h2 class="sec-title" id="venueHeading">Tiệc cưới sẽ tổ chức tại</h2>
     <p class="venue-name" data-bind="venue.name"></p>
     <p class="venue-addr" data-bind="venue.address"></p>
@@ -821,7 +823,8 @@ const CONFIG = {
   venue: {
     name: "Gia đình nhà gái",
     address: "Tổ 6, Phường Phủ Lý, Tỉnh Ninh Bình",
-    map: "https://www.google.com/maps?q=T%E1%BB%95+d%E1%BB%8Bch+v%E1%BB%A5+c%C6%A1+kh%C3%AD+Xu%C3%A2n+K%E1%BB%B7,+Ph%E1%BB%A7+L%C3%BD,+Ninh+B%C3%ACnh&ftid=0x3135d1ada8ca7d3f:0xe8d304295720dc30" // Vị trí nhà gái do gia đình cung cấp
+    map: "https://www.google.com/maps?q=T%E1%BB%95+d%E1%BB%8Bch+v%E1%BB%A5+c%C6%A1+kh%C3%AD+Xu%C3%A2n+K%E1%BB%B7,+Ph%E1%BB%A7+L%C3%BD,+Ninh+B%C3%ACnh&ftid=0x3135d1ada8ca7d3f:0xe8d304295720dc30", // Vị trí nhà gái do gia đình cung cấp
+    mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3736.231374322655!2d105.9150442!3d20.537711999999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135d1ada8ca7d3f%3A0xe8d304295720dc30!2zVOG7lSBk4buLY2ggduG7pSBjxqEga2jDrSBYdcOibiBL4bu3!5e0!3m2!1svi!2s!4v1792830831623!5m2!1svi!2s"
   },
 
   // Lễ chính (in trong card "Thông tin lễ cưới"); đặt null nếu không cần
@@ -1010,6 +1013,8 @@ function buildLinks() {
   });
   $("gcalLink").href = "https://calendar.google.com/calendar/render?" + params.toString();
   $("mapLink").href = CONFIG.venue.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(CONFIG.venue.address);
+  $("mapPreview").hidden = !CONFIG.venue.mapEmbed;
+  if (CONFIG.venue.mapEmbed) $("mapPreview").src = CONFIG.venue.mapEmbed;
 }
 
 function photoOrPlaceholder(src, label) {
