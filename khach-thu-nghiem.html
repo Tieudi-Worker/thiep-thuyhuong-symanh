@@ -608,7 +608,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <section class="sec" style="padding-top:8px">
     <div class="red-card has-garland">
       <img class="bloom bloom-garland" src="hoa/garland.webp" alt="" width="760" height="326" loading="lazy" decoding="async">
-      <h2 class="sec-title">Thông tin lễ cưới</h2>
+      <h2 class="sec-title" data-bind="ceremonyEvent.heading"></h2>
       <div class="flourish" style="margin:-10px auto 18px" aria-hidden="true"><svg viewBox="0 0 240 30"><use href="#flourish"/></svg></div>
       <!-- Hai nhà song song, ngăn bởi đường chỉ vàng -->
       <div class="families">
@@ -675,7 +675,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <section class="sec" style="padding-top:8px">
     <div class="red-card">
       <img class="bloom bloom-corner" src="hoa/corner-a.webp" alt="" width="480" height="480" loading="lazy" decoding="async">
-      <h2 class="sec-title">Thông tin tiệc cưới</h2>
+      <h2 class="sec-title" data-bind="party.heading"></h2>
       <div class="flourish" style="margin:-10px auto 18px" aria-hidden="true"><svg viewBox="0 0 240 30"><use href="#flourish"/></svg></div>
       <p class="time-line" id="partyLine">Tiệc cưới sẽ diễn ra vào lúc</p>
       <div class="date-block">
@@ -816,6 +816,7 @@ const CONFIG = {
   welcome: "",                        // giờ đón khách; để trống thì ẩn dòng Đón khách / Khai tiệc
   start: "10:00",
   party: {
+    heading: "THÔNG TIN LỄ CƯỚI NHÀ GÁI",
     title: "Bữa cơm thân mật",
     line: "Tiệc cưới sẽ diễn ra vào lúc",
     venueHeading: "Địa điểm tổ chức"
@@ -829,6 +830,7 @@ const CONFIG = {
 
   // Lễ chính (in trong card "Thông tin lễ cưới"); đặt null nếu không cần
   ceremonyEvent: {
+    heading: "THÔNG TIN LỄ CƯỚI NHÀ TRAI",
     date: "2026-11-28",
     time: "09:30",
     place: "Tại gia đình nhà trai",
