@@ -406,6 +406,12 @@ body.page-hidden *, body.page-hidden *::before, body.page-hidden *::after { anim
 
 footer.sec { padding-bottom: 72px; }
 .credit { margin: 28px 0 0; font-size: 12.5px; color: var(--ink-soft); opacity: .75; }
+.music-list { margin: 10px auto 0; max-width: 300px; font-size: 13px; color: var(--ink-soft); }
+.music-list summary { cursor: pointer; }
+.music-list ol { text-align: left; padding-left: 24px; }
+.groom-map { margin-top: 28px; }
+.groom-map .venue-map { margin-bottom: 16px; }
+.groom-map .btn { font-size: 13px; letter-spacing: .06em; }
 .thanks { font-family: var(--font-script); font-size: clamp(32px, 9vw, 42px); color: var(--wine); line-height: 1.2; margin: 0; }
 
 /* ---------- Chữ in hoa: Playfair, giãn rộng ---------- */
@@ -655,6 +661,11 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
         <div class="ce-place" id="cePlace"></div>
         <div class="addr" id="ceAddr"></div>
       </div>
+      <div class="groom-map" id="groomMap" hidden>
+        <p class="role" data-bind="ceremonyEvent.mapHeading"></p>
+        <iframe class="venue-map" id="groomMapPreview" title="Bản đồ nhà trai — ngày 28/11/2026" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <a class="btn light" id="groomMapLink" target="_blank" rel="noopener" data-bind="ceremonyEvent.mapLabel"></a>
+      </div>
     </div>
   </section>
 
@@ -707,11 +718,12 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <!-- 5. Địa điểm -->
   <section class="sec venue">
     <img class="sketch" src="hoa/arch-pavilion.webp" decoding="async" alt="" width="900" height="675" loading="lazy">
-    <iframe class="venue-map" id="mapPreview" title="Bản đồ địa điểm tổ chức" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
+    <p class="eyebrow" data-bind="venue.mapHeading"></p>
+    <iframe class="venue-map" id="mapPreview" title="Bản đồ nhà gái — ngày 27/11/2026" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
     <h2 class="sec-title" id="venueHeading">Tiệc cưới sẽ tổ chức tại</h2>
     <p class="venue-name" data-bind="venue.name"></p>
     <p class="venue-addr" data-bind="venue.address"></p>
-    <a class="btn" id="mapLink" target="_blank" rel="noopener">Chỉ đường</a>
+    <a class="btn" id="mapLink" target="_blank" rel="noopener" data-bind="venue.mapLabel"></a>
     <div class="flourish" style="margin-top:40px" aria-hidden="true"><svg viewBox="0 0 240 30"><use href="#flourish"/></svg></div>
   </section>
 
@@ -779,7 +791,8 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   <footer class="sec">
     <img class="bloom footer-garland" src="hoa/garland.webp" alt="" width="760" height="326" loading="lazy">
     <p class="thanks">Sự hiện diện của quý khách là niềm vinh hạnh của gia đình chúng tôi</p>
-    <p class="credit" data-bind="musicCredit"></p>
+    <p class="credit" id="musicCredit"></p>
+    <details class="music-list"><summary>Danh sách nhạc nền</summary><ol id="musicList"></ol></details>
   </footer>
 </main>
 
@@ -796,7 +809,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
 <button class="music" id="musicBtn" type="button" data-sfx="none" aria-label="Bật/tắt nhạc" hidden>
   <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="#b9925a" stroke-width="1.5"/></svg>
 </button>
-<audio id="audio" loop preload="none"></audio>
+<audio id="audio" preload="none"></audio>
 
 <script>
 /* ============================================================
@@ -821,6 +834,8 @@ const CONFIG = {
     venueHeading: "Địa điểm tổ chức"
   },
   venue: {
+    mapHeading: "Bản đồ nhà gái · 27/11/2026",
+    mapLabel: "Chỉ đường đến nhà gái",
     name: "Gia đình nhà gái",
     address: "Tổ 6, Phường Phủ Lý, Tỉnh Ninh Bình",
     map: "https://www.google.com/maps?q=T%E1%BB%95+d%E1%BB%8Bch+v%E1%BB%A5+c%C6%A1+kh%C3%AD+Xu%C3%A2n+K%E1%BB%B7,+Ph%E1%BB%A7+L%C3%BD,+Ninh+B%C3%ACnh&ftid=0x3135d1ada8ca7d3f:0xe8d304295720dc30", // Vị trí nhà gái do gia đình cung cấp
@@ -830,6 +845,10 @@ const CONFIG = {
   // Lễ chính (in trong card "Thông tin lễ cưới"); đặt null nếu không cần
   ceremonyEvent: {
     heading: "THÔNG TIN LỄ CƯỚI NHÀ TRAI",
+    mapHeading: "Bản đồ nhà trai · 28/11/2026",
+    mapLabel: "Chỉ đường đến nhà trai",
+    map: "https://www.google.com/maps?cid=10080445324199443492",
+    mapEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3726.130199157869!2d106.4273199!3d20.947285899999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313585006ae74701%3A0x8be4ef9d26a7bc24!2zSMSQTkQgeMOjIEjDoCBC4bqvYw!5e0!3m2!1svi!2s!4v1792831902100!5m2!1svi!2s",
     date: "2026-11-28",
     time: "09:30",
     place: "Tại gia đình nhà trai",
@@ -840,8 +859,12 @@ const CONFIG = {
     cover: "anh/mau-04.webp",          // Ảnh mẫu tạm QUIN Bridal/Pexels; thay bằng ảnh chính chủ sau
     album: ["anh/mau-01.webp", "anh/mau-02.webp", "anh/mau-03.webp", "anh/mau-04.webp", "anh/mau-05.webp", "anh/mau-06.webp"]
   },
-  music: "am-thanh/beautiful-in-white.mp3",
-  musicCredit: "Nhạc nền: “Beautiful In White”",
+  music: [
+    { src: "am-thanh/em-dong-y.mp3", title: "Em Đồng Ý (I Do)" },
+    { src: "am-thanh/cuoi-nhau-di.mp3", title: "Cưới Nhau Đi (Yes I Do)" },
+    { src: "am-thanh/just-the-way-you-are.mp3", title: "Just The Way You Are" },
+    { src: "am-thanh/beautiful-in-white.mp3", title: "Beautiful In White" }
+  ],
   sfx: true,                          // âm thanh khi bấm nút; false để tắt
   banks: [                            // chưa có số tài khoản thì hiện "Đang cập nhật"
     { who: "Cô dâu", bank: "", number: "", holder: "NGUYEN THUY HUONG", qr: "" },
@@ -1015,7 +1038,24 @@ function buildLinks() {
   $("gcalLink").href = "https://calendar.google.com/calendar/render?" + params.toString();
   $("mapLink").href = CONFIG.venue.map || "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(CONFIG.venue.address);
   $("mapPreview").hidden = !CONFIG.venue.mapEmbed;
-  if (CONFIG.venue.mapEmbed) $("mapPreview").src = CONFIG.venue.mapEmbed;
+  $("groomMap").hidden = !CONFIG.ceremonyEvent?.mapEmbed;
+  if (CONFIG.ceremonyEvent?.mapEmbed) {
+    $("groomMapLink").href = CONFIG.ceremonyEvent.map;
+  }
+  $("openBtn").addEventListener("click", () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        if (!isIntersecting) return;
+        target.src = target.dataset.mapSrc;
+        observer.unobserve(target);
+      });
+    }, { rootMargin: "200px" });
+    [[ $("mapPreview"), CONFIG.venue.mapEmbed ], [ $("groomMapPreview"), CONFIG.ceremonyEvent?.mapEmbed ]].forEach(([frame, src]) => {
+      if (!src) return;
+      frame.dataset.mapSrc = src;
+      observer.observe(frame);
+    });
+  }, { once: true });
 }
 
 function photoOrPlaceholder(src, label) {
@@ -1257,8 +1297,28 @@ function wireSfx() {
 // Nút nhạc bật/tắt cả nhạc nền lẫn âm thanh bấm
 function wireMusic() {
   const audio = $("audio"), btn = $("musicBtn");
-  if (!CONFIG.music) return null;
-  audio.src = CONFIG.music;
+  if (!CONFIG.music.length) return null;
+  const tracks = CONFIG.music.slice();
+  for (let i = tracks.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
+  }
+  tracks.forEach((track) => {
+    const item = document.createElement("li");
+    item.textContent = track.title;
+    $("musicList").append(item);
+  });
+  let current = 0;
+  const selectTrack = () => {
+    audio.src = tracks[current].src;
+    $("musicCredit").textContent = `Nhạc nền: “${tracks[current].title}”`;
+  };
+  selectTrack();
+  audio.addEventListener("ended", () => {
+    current = (current + 1) % tracks.length;
+    selectTrack();
+    audio.play().catch(() => {});
+  });
   audio.volume = 0.6;
   btn.hidden = false;
   const sync = () => btn.classList.toggle("playing", !audio.paused);
