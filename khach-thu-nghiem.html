@@ -14,13 +14,13 @@
 <meta name="twitter:title" content="Thúy Hường &amp; Sỹ Mạnh">
 <meta name="twitter:description" content="Thân mời Khách Thử Nghiệm tới dự bữa cơm thân mật chung vui cùng gia đình chúng tôi | Thứ Sáu, 27 tháng 11, 2026 | Gia đình nhà gái">
 <meta property="og:url" content="https://tieudi-worker.github.io/thiep-thuyhuong-symanh/khach-thu-nghiem">
-<meta property="og:image" content="https://tieudi-worker.github.io/thiep-thuyhuong-symanh/og-image-cba0cec8acec.jpg">
-<meta property="og:image:secure_url" content="https://tieudi-worker.github.io/thiep-thuyhuong-symanh/og-image-cba0cec8acec.jpg">
+<meta property="og:image" content="https://tieudi-worker.github.io/thiep-thuyhuong-symanh/og-image-c921af8099b0.jpg">
+<meta property="og:image:secure_url" content="https://tieudi-worker.github.io/thiep-thuyhuong-symanh/og-image-c921af8099b0.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Thúy Hường &amp; Sỹ Mạnh">
-<meta name="twitter:image" content="https://tieudi-worker.github.io/thiep-thuyhuong-symanh/og-image-cba0cec8acec.jpg">
+<meta name="twitter:image" content="https://tieudi-worker.github.io/thiep-thuyhuong-symanh/og-image-c921af8099b0.jpg">
 <meta name="twitter:image:alt" content="Thúy Hường &amp; Sỹ Mạnh">
 </head>
 <body>
@@ -202,6 +202,7 @@ body.page-hidden *, body.page-hidden *::before, body.page-hidden *::after { anim
 .envelope.seal-off .env-seal { animation: sealPop .6s cubic-bezier(.3, 0, .2, 1); }
 @keyframes sealPop { 0% { transform: translate(-50%, -50%) scale(1); } 40% { transform: translate(-50%, -50%) scale(1.25) rotate(-12deg); } 100% { transform: translate(-50%, -50%) scale(1); } }
 .photo-fill { width: 100%; height: 100%; object-fit: cover; display: block; }
+#coverPhoto .photo-fill { object-position: 50% 22%; }   /* ảnh bìa dọc: giữ phần mặt trong khung phong bì */
 .ph {
   width: 100%; height: 100%;
   display: grid; place-items: center; text-align: center;
@@ -860,8 +861,11 @@ const CONFIG = {
   },
 
   photos: {
-    cover: "anh/mau-04.webp",          // Ảnh mẫu tạm QUIN Bridal/Pexels; thay bằng ảnh chính chủ sau
-    album: ["anh/mau-01.webp", "anh/mau-02.webp", "anh/mau-03.webp", "anh/mau-04.webp", "anh/mau-05.webp", "anh/mau-06.webp"]
+    cover: "anh/cuoi-07.jpg",          // ảnh cưới thật (bản web 1200px); bản gốc nằm trong anh-goc/, không đưa lên mạng
+    // album: bản 1200px để lướt; bấm ảnh mở bản nét 2000px cùng tên trong anh/full/ (thiếu thì dùng bản thường)
+    album: ["anh/cuoi-01.jpg", "anh/cuoi-02.jpg", "anh/cuoi-03.jpg", "anh/cuoi-04.jpg", "anh/cuoi-05.jpg",
+            "anh/cuoi-06.jpg", "anh/cuoi-07.jpg", "anh/cuoi-08.jpg", "anh/cuoi-09.jpg", "anh/cuoi-10.jpg",
+            "anh/cuoi-11.jpg", "anh/cuoi-12.jpg", "anh/cuoi-13.jpg", "anh/cuoi-14.jpg", "anh/cuoi-15.jpg"]
   },
   music: [
     { src: "am-thanh/em-dong-y.mp3", title: "Em Đồng Ý (I Do)" },
@@ -1139,7 +1143,13 @@ function buildAlbum() {
 const ALBUM_SPREAD = 62;   // % chiều rộng ảnh mà mỗi lớp lệch sang bên
 const SWIPE_MIN_PX = 40;
 
-function openLightbox(src) { $("lightImg").src = src; $("lightbox").hidden = false; }
+function openLightbox(src) {
+  const img = $("lightImg");
+  const full = src.replace(/^anh\//, "anh/full/");
+  img.onerror = () => { img.onerror = null; img.src = src; };   // chưa có bản nét thì dùng bản thường
+  img.src = full;
+  $("lightbox").hidden = false;
+}
 $("lightbox").addEventListener("click", () => { $("lightbox").hidden = true; });
 
 /* ---------- Lịch + đếm ngược ---------- */
