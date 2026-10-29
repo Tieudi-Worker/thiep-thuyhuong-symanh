@@ -394,7 +394,14 @@ body.page-hidden *, body.page-hidden *::before, body.page-hidden *::after { anim
 .bank .holder { font-size: 14.5px; text-transform: uppercase; overflow-wrap: anywhere; }
 .mini { min-height: 34px; padding: 6px 14px; font-size: 13.5px; }
 .lightbox { position: fixed; inset: 0; z-index: 70; background: rgba(20, 2, 6, .92); display: grid; place-items: center; padding: 20px; }
-.lightbox img { max-height: 86vh; max-width: 100%; border-radius: 6px; }
+.lightbox img { max-height: 86vh; max-width: 100%; border-radius: 6px; user-select: none; -webkit-user-drag: none; }
+.lightbox { touch-action: pan-y; }
+.lb-btn { position: absolute; width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(226, 194, 136, .55); background: rgba(61, 12, 20, .6); color: #f4e4b8; font-size: 26px; line-height: 1; display: grid; place-items: center; cursor: pointer; backdrop-filter: blur(4px); }
+.lb-btn:hover, .lb-btn:focus-visible { background: rgba(106, 24, 36, .85); outline: none; border-color: #e2c288; }
+.lb-close { top: calc(14px + env(safe-area-inset-top)); right: 14px; font-size: 18px; }
+.lb-prev { left: 10px; top: 50%; transform: translateY(-50%); }
+.lb-next { right: 10px; top: 50%; transform: translateY(-50%); }
+.lb-count { position: absolute; bottom: calc(16px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); color: #f4e4b8; font-size: 14px; font-weight: 600; letter-spacing: .14em; }
 
 /* Nhạc */
 .music {
@@ -809,7 +816,13 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; transform: t
   </div>
 </div>
 
-<div class="lightbox" id="lightbox" hidden><img id="lightImg" alt=""></div>
+<div class="lightbox" id="lightbox" hidden>
+  <img id="lightImg" alt="Ảnh cưới" draggable="false">
+  <button class="lb-btn lb-close" id="lightClose" type="button" aria-label="Đóng">✕</button>
+  <button class="lb-btn lb-prev" id="lightPrev" type="button" aria-label="Ảnh trước">‹</button>
+  <button class="lb-btn lb-next" id="lightNext" type="button" aria-label="Ảnh sau">›</button>
+  <div class="lb-count" id="lightCount"></div>
+</div>
 
 <button class="music" id="musicBtn" type="button" data-sfx="none" aria-label="Bật/tắt nhạc" hidden>
   <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 2a10 10 0 0 1 10 10" fill="none" stroke="#b9925a" stroke-width="1.5"/></svg>
@@ -1096,7 +1109,7 @@ function buildAlbum() {
     btn.addEventListener("click", () => {
       if (dragged) return;
       if (i !== current) return go(i);
-      if (src) openLightbox(src);
+      if (src) openLightbox(i);
     });
     stage.append(btn);
     dots.append(document.createElement("span"));
@@ -1143,14 +1156,43 @@ function buildAlbum() {
 const ALBUM_SPREAD = 62;   // % chiều rộng ảnh mà mỗi lớp lệch sang bên
 const SWIPE_MIN_PX = 40;
 
-function openLightbox(src) {
-  const img = $("lightImg");
-  const full = src.replace(/^anh\//, "anh/full/");
+/* ---------- Xem ảnh lớn: vuốt / mũi tên / phím ←→ để chuyển ảnh ---------- */
+const fullSrc = (src) => src.replace(/^anh\//, "anh/full/");
+let lightIndex = 0;
+function showLight(i) {
+  const list = CONFIG.photos.album, n = list.length;
+  lightIndex = (i + n) % n;
+  const src = list[lightIndex], img = $("lightImg");
   img.onerror = () => { img.onerror = null; img.src = src; };   // chưa có bản nét thì dùng bản thường
-  img.src = full;
-  $("lightbox").hidden = false;
+  img.src = fullSrc(src);
+  $("lightCount").textContent = `${lightIndex + 1} / ${n}`;
+  [lightIndex + 1, lightIndex - 1].forEach((j) => { new Image().src = fullSrc(list[(j + n) % n]); });   // tải sẵn ảnh kề bên
 }
-$("lightbox").addEventListener("click", () => { $("lightbox").hidden = true; });
+function openLightbox(i) { showLight(i); $("lightbox").hidden = false; }
+function closeLightbox() { $("lightbox").hidden = true; }
+(() => {
+  const box = $("lightbox");
+  let sx = null, sy = null, swiped = false;
+  box.addEventListener("pointerdown", (e) => { sx = e.clientX; sy = e.clientY; swiped = false; });
+  box.addEventListener("pointerup", (e) => {
+    if (sx === null) return;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    sx = null;
+    if (Math.abs(dx) > SWIPE_MIN_PX && Math.abs(dx) > Math.abs(dy)) { swiped = true; showLight(lightIndex + (dx < 0 ? 1 : -1)); }
+  });
+  box.addEventListener("pointercancel", () => { sx = null; });
+  box.addEventListener("click", (e) => {
+    if (swiped) { swiped = false; return; }
+    if (e.target === box || e.target.closest("#lightClose")) closeLightbox();   // chỉ chạm nền tối hoặc nút ✕ mới đóng
+  });
+  $("lightPrev").addEventListener("click", (e) => { e.stopPropagation(); showLight(lightIndex - 1); });
+  $("lightNext").addEventListener("click", (e) => { e.stopPropagation(); showLight(lightIndex + 1); });
+  document.addEventListener("keydown", (e) => {
+    if (box.hidden) return;
+    if (e.key === "ArrowRight") showLight(lightIndex + 1);
+    if (e.key === "ArrowLeft") showLight(lightIndex - 1);
+  });
+})();
 
 /* ---------- Lịch + đếm ngược ---------- */
 function buildCalendar() {
